@@ -1,0 +1,62 @@
+header {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 50px;
+    font-family: 'Poiret One', cursive;
+}
+
+#message-container {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 32px;
+    font-family: 'Oswald', sans-serif;
+}
+
+#message {
+    font-size: 24px;
+}
+
+#board {
+    margin-top: 25px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.row button {
+    font-size: 42px;
+}
+
+#board button {
+    width: 100px;
+    height: 100px;
+}
+
+#button-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#start, #submit, #play-again {
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+    font-family: 'Oswald', sans-serif;
+    border-radius: 5px;
+    border: none;
+}
+
+#start {
+    background-color: #2ecc71;
+}
+
+#submit {
+    background-color: #3498db;
+    color: white;
+}
+
+#play-again {
+    background-color: #f1c40f;
+}
