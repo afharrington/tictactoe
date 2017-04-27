@@ -9,7 +9,8 @@ var submitUI = document.getElementById('submit');
 var playAgainUI = document.getElementById('play-again');
 var boardUI = document.getElementById('board');
 var messageUI = document.getElementById('message');
-var squaresUI = document.querySelectorAll("#board button");
+var squaresUI = document.querySelectorAll(".square");
+var header = document.getElementById('header');
 
 // Event Handlers
 startUI.onclick = startGame;
@@ -27,6 +28,7 @@ function startGame() {
   boardUI.style.display = "block";
   submitUI.style.display = "inline-block";
   startUI.style.display = "none";
+  header.style.display = "none";
   messageUI.innerHTML = "Player "+ currentPlayer + "'s Turn";
 
   for (var i=0; i<squaresUI.length; i++) {
@@ -122,6 +124,7 @@ function resetGameUI() {
   boardUI.style.display = "none";
   playAgainUI.style.display = "none";
   startUI.style.display = "inline-block";
+  header.style.display = "inline-block";
   messageUI.innerHTML = "Winner goes first! Get ready, Player " + currentPlayer + "...";
 }
 
