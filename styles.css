@@ -68,3 +68,18 @@ header {
 #play-again {
     background-color: #f1c40f;
 }
+
+footer {
+    margin-top: 100px;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #2980b9
+}
+
+a:visited {
+    color: #8e44ad;
+}
