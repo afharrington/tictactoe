@@ -36,7 +36,6 @@ function startGame() {
   }
 
   board = createEmptyBoard();
-
   gameActive = true;
 }
 
@@ -55,6 +54,7 @@ function selectSquare(squareId) {
     }
   } 
 
+  // Only if the square is empty, fill with the player's symbol 
   if (square.innerHTML == "") {
     square.innerHTML = currentPlayer;
     selectedThisTurn = squareId;
@@ -92,7 +92,6 @@ function submitMove() {
 }
 
 function checkForWin() {
-  
   var winningRuns = {
     row0: [ [board[0][0]], [board[0][1]], [board[0][2]] ],
     row1: [ [board[1][0]], [board[1][1]], [board[1][2]] ],
