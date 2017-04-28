@@ -22,7 +22,6 @@ for (var i=0; i<squaresUI.length; i++) {
 }
 playAgainUI.onclick = resetGameUI; 
 
- 
 function startGame() {
   // Updates UI elements for play mode
   boardUI.style.display = "block";
@@ -64,11 +63,13 @@ function selectSquare(squareId) {
 
 // Adds selected square to the board data, ends player's turn
 function submitMove() {
+  var winner, full;
+
   if (!selectedThisTurn) {
     messageUI.innerHTML ="Select a square and try again";
   } else {
-    var col = Number(selectedThisTurn.charAt(1));
-    var row = (function() {
+    var selectedCol = Number(selectedThisTurn.charAt(1));
+    var selectedRow = (function() {
       switch(selectedThisTurn.charAt(0)) {
         case "a":
           return 0;
@@ -78,17 +79,28 @@ function submitMove() {
           return 2;        
       }
     })(); 
-  }
+   // Adds move to board data
+    board[selectedRow][selectedCol] = currentPlayer;
 
-  // Adds move to board data
-  board[row][col] = currentPlayer;
+    winner = checkForWin();
 
-  checkForWin();
-  
-  if (gameActive) {
-    switchPlayer();
-    selectedThisTurn = null;
-  }
+    if (winner == "X" || winner == "O") {
+      endGame("Player " + winner + " won!");
+    } else if (status == "Full") {
+      endGame("No winner this game.");
+    } else {
+      full = checkForFull();
+    }
+
+    if (full) {
+      endGame("No winner this time.");
+    };
+
+    if (gameActive) {
+      switchPlayer();
+      selectedThisTurn = null;
+    }
+  }  
 }
 
 function checkForWin() {
@@ -105,7 +117,6 @@ function checkForWin() {
 
   // for each potential winning run
   for (run in winningRuns) {
-
     var xCount = 0;
     var oCount = 0;
 
@@ -115,11 +126,28 @@ function checkForWin() {
         xCount++;
       } else if (winningRuns[run][i] == "O") {
         oCount++;
+      } 
+    }
+    if (xCount == 3) {
+      return "X";
+    } else if (oCount == 3) {
+      return "O";
+    }
+  }
+}
+
+function checkForFull() {
+  nullCount = 0; 
+
+  for (row=0; row<3; row++) {
+    for (col=0; col<3;col++) {
+      if (board[row][col] == null) {
+        nullCount++;
       }
     }
-    if (xCount == 3 || oCount == 3) {
-      endGame();
-    }
+  }
+  if (nullCount == 0) {
+    return true;
   }
 }
 
@@ -128,9 +156,9 @@ function switchPlayer() {
   messageUI.innerHTML = "Player "+ currentPlayer + "'s Turn";
 }
 
-function endGame() {
+function endGame(message) {
   gameActive = false;
-  messageUI.innerHTML = "Player " + currentPlayer + " won!";
+  messageUI.innerHTML = message;
   submitUI.style.display = "none";
   playAgainUI.style.display = "inline-block";
 }
@@ -140,7 +168,7 @@ function resetGameUI() {
   playAgainUI.style.display = "none";
   startUI.style.display = "inline-block";
   header.style.display = "inline-block";
-  messageUI.innerHTML = "Winner goes first! Get ready, Player " + currentPlayer + "...";
+  messageUI.innerHTML = "Get ready, Player " + currentPlayer + "...";
 }
 
 function createEmptyBoard() {
