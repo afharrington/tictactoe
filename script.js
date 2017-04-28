@@ -1,6 +1,6 @@
 // Game State
 var gameActive = false;
-var board, selectedThisTurn;
+var selectedThisTurn, board;
 var currentPlayer = "X"; 
 
 // UI Elements
@@ -36,6 +36,7 @@ function startGame() {
   }
 
   board = createEmptyBoard();
+
   gameActive = true;
 }
 
@@ -81,36 +82,52 @@ function submitMove() {
 
   // Adds move to board data
   board[row][col] = currentPlayer;
-  
-  checkForWin(row, col);
 
+  checkForWin();
+  
   if (gameActive) {
     switchPlayer();
     selectedThisTurn = null;
   }
 }
 
+function checkForWin() {
+  
+  var winningRuns = {
+    row0: [ [board[0][0]], [board[0][1]], [board[0][2]] ],
+    row1: [ [board[1][0]], [board[1][1]], [board[1][2]] ],
+    row2: [ [board[2][0]], [board[2][1]], [board[2][2]] ],
+    col0: [ [board[0][0]], [board[1][0]], [board[2][0]] ],
+    col1: [ [board[0][1]], [board[1][1]], [board[2][1]] ],
+    col2: [ [board[0][2]], [board[1][2]], [board[2][2]] ],
+    topdiag: [ [board[2][0]], [board[1][1]], [board[0][2]] ],
+    botdiag: [ [board[0][0]], [board[1][1]], [board[2][2]] ]
+  }
 
-function checkForWin(row, col){
-  // if the player fills a row
-  if ( (board[row][0] == board[row][1] && board[row][1] == board[row][2]) ||
-    // if the player fills a column
-    (board[0][col] == board[1][col] && board[1][col] == board[2][col]) ||
-    // if player fills diagonal (top left > bottom right)
-    (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[1][1] != null) ||
-    // if player fills diagonal (bottom left > top right)
-    (board[2][0] == board[1][1] && board[1][1] == board[0][2] && board[1][1] != null) ) {
+  // for each potential winning run
+  for (run in winningRuns) {
 
+    var xCount = 0;
+    var oCount = 0;
+
+    // for each item in the run, check if value is X or O
+    for (var i=0; i<3; i++) {
+      if (winningRuns[run][i] == "X") {
+        xCount++;
+      } else if (winningRuns[run][i] == "O") {
+        oCount++;
+      }
+    }
+    if (xCount == 3 || oCount == 3) {
       endGame();
     }
-} 
-
+  }
+}
 
 function switchPlayer() {
   currentPlayer == "X" ? currentPlayer = "O" : currentPlayer = "X";
   messageUI.innerHTML = "Player "+ currentPlayer + "'s Turn";
 }
-
 
 function endGame() {
   gameActive = false;
@@ -119,7 +136,6 @@ function endGame() {
   playAgainUI.style.display = "inline-block";
 }
 
-
 function resetGameUI() {
   boardUI.style.display = "none";
   playAgainUI.style.display = "none";
@@ -127,7 +143,6 @@ function resetGameUI() {
   header.style.display = "inline-block";
   messageUI.innerHTML = "Winner goes first! Get ready, Player " + currentPlayer + "...";
 }
-
 
 function createEmptyBoard() {
   board = [];
