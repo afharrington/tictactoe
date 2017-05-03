@@ -1,6 +1,7 @@
 // Game State
 var gameActive = false;
 var selectedThisTurn, board;
+var playerMode = "one"; 
 var currentPlayer = "X"; 
 
 // UI Elements
@@ -51,7 +52,7 @@ function selectSquare(squareId) {
     if ((squareId != selectedThisTurn) && square.innerHTML == "") {
       selectedSquare.innerHTML = "";
     }
-  } 
+  }
 
   // Only if the square is empty, fill with the player's symbol 
   if (square.innerHTML == "") {
@@ -86,8 +87,6 @@ function submitMove() {
 
     if (winner == "X" || winner == "O") {
       endGame("Player " + winner + " won!");
-    } else if (status == "Full") {
-      endGame("No winner this game.");
     } else {
       full = checkForFull();
     }
@@ -163,6 +162,7 @@ function endGame(message) {
   playAgainUI.style.display = "inline-block";
 }
 
+// Brings back to the start screen 
 function resetGameUI() {
   boardUI.style.display = "none";
   playAgainUI.style.display = "none";
