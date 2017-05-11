@@ -1,14 +1,13 @@
 header {
     margin-top: 35px;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 32px;
     font-family: 'Poiret One', cursive;
 }
 
 #message-container {
     margin-top: 25px;
     text-align: center;
-    font-size: 1em;
     font-family: 'Oswald', sans-serif;
 }
 
@@ -27,7 +26,7 @@ header {
 }
 
 .row square {
-    font-size: 2em;
+    font-size: 32px;
 }
 
 .square {
@@ -43,14 +42,18 @@ header {
 }
 
 #button-container {
-    margin-top: 30px;
+    margin-top: 25px;
     text-align: center;
 }
 
-#start, #submit, #play-again {
+button {
+  margin: 15px;
+}
+
+#start, #submit, #play-again, #tom {
     width: 200px;
     height: 50px;
-    font-size: 1.2em;
+    font-size: 22px;
     font-family: 'Oswald', sans-serif;
     border-radius: 5px;
     border: none;
