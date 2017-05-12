@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald|Shadows+Into+Light');
+
 header {
     margin-top: 35px;
     text-align: center;
     font-size: 32px;
-    font-family: 'Poiret One', cursive;
+    font-family: 'Shadows Into Light', cursive;
 }
 
 #message-container {
@@ -36,8 +38,8 @@ header {
     text-align: center;
     vertical-align: middle;
     line-height: 100px;
-    font-family: sans-serif;
-    font-size: 48px;
+    font-family: 'Shadows Into Light', cursive;
+    font-size: 60px;
     margin: 2px;
 }
 
@@ -61,6 +63,10 @@ button {
 
 #start {
     background-color: #2ecc71;
+}
+
+#tom {
+  background-color: #f39c12;
 }
 
 #submit {

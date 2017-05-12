@@ -1,17 +1,26 @@
 // Game State
 var gameActive = false;
-var selectedThisTurn, board;
+var selectedThisTurn, board, tomsWinningMove, tomsBlockingMove;
 var playingTom = false;
 var currentPlayer = "X";
+var winningRuns = [
+  ["a", "b", "c"],
+  ["d", "e", "f"],
+  ["g", "h", "i"],
+  ["a", "d", "g"],
+  ["b", "e", "h"],
+  ["c", "f", "i"],
+  ["a", "e", "i"],
+  ["g", "e", "c"]
+]
 
-var xName, oName;
-if (playingTom) {
-  xName = "You";
-  oName = "Tom";
-} else {
-  xName = "Player X";
-  oName = "Player O";
-}
+/* BOARD:
+a    b    c
+
+d    e    f
+
+g    h    i
+*/
 
 // UI Elements
 var startUI = document.getElementById('start');
@@ -36,7 +45,7 @@ tomUI.onclick = function(){
 submitUI.onclick = submitMove;
 for (var i=0; i<squaresUI.length; i++) {
   squaresUI[i].onclick = function() {
-    if (currentPlayer !== "Tom") {
+    if (currentPlayer == "X") {
       selectSquare(this.id);
     }
   }
@@ -66,8 +75,8 @@ function startGame() {
     squaresUI[i].innerHTML = "";
   }
 
-  board = createEmptyBoard();
   gameActive = true;
+  board = createEmptyBoard();
 
   if (playingTom && currentPlayer == "O") {
     tomsMove();
@@ -97,27 +106,15 @@ function selectSquare(squareId) {
   }
 }
 
-
 // Adds selected square to the board data, ends player's turn
 function submitMove() {
-
   if (!selectedThisTurn) {
     messageUI.innerHTML ="Select a square and try again";
   } else {
-    var selectedCol = Number(selectedThisTurn.charAt(1));
-    var selectedRow = (function() {
-      switch(selectedThisTurn.charAt(0)) {
-        case "a":
-          return 0;
-        case "b":
-          return 1;
-        case "c":
-          return 2;
-      }
-    })();
+    // Adds move to board data
+    board[selectedThisTurn] = currentPlayer;
   }
-  // Adds move to board data
-  board[selectedRow][selectedCol] = currentPlayer;
+
   checkForWin();
   if (gameActive) {
     switchPlayer();
@@ -125,36 +122,38 @@ function submitMove() {
   }
 }
 
-
 function checkForWin() {
   var winner;
-  var winningRuns = {
-    row0: [ [board[0][0]], [board[0][1]], [board[0][2]] ],
-    row1: [ [board[1][0]], [board[1][1]], [board[1][2]] ],
-    row2: [ [board[2][0]], [board[2][1]], [board[2][2]] ],
-    col0: [ [board[0][0]], [board[1][0]], [board[2][0]] ],
-    col1: [ [board[0][1]], [board[1][1]], [board[2][1]] ],
-    col2: [ [board[0][2]], [board[1][2]], [board[2][2]] ],
-    topdiag: [ [board[2][0]], [board[1][1]], [board[0][2]] ],
-    botdiag: [ [board[0][0]], [board[1][1]], [board[2][2]] ]
-  }
-
-  // for each potential winning run
-  for (run in winningRuns) {
+  // for each of the possible winning runs
+  for (var i=0; i<winningRuns.length; i++) {
     var xCount = 0;
     var oCount = 0;
-    // for each item in the run, check if value is X or O
-    for (var i=0; i<3; i++) {
-      if (winningRuns[run][i] == "X") {
+    var nullSquares = [];
+
+    // count number of X's, O's, and nulls
+    for (var j=0; j<3; j++) {
+      var letter = winningRuns[i][j];
+      if (board[letter] == "X") {
         xCount++;
-      } else if (winningRuns[run][i] == "O") {
+      } else if (board[letter] == "O") {
         oCount++;
+      } else {
+        nullSquares.push(letter);
       }
-    }
-    if (xCount == 3) {
-      winner = "X";
-    } else if (oCount == 3) {
-      winner = "O";
+
+      if (xCount == 3) {
+        winner = "X";
+      } else if (oCount == 3) {
+        winner = "O";
+      }
+
+      if (playingTom && (oCount == 2 && nullSquares.length == 1)) {
+        tomsWinningMove = nullSquares[0];
+      }
+
+      if (playingTom && (xCount == 2 && nullSquares.length == 1)) {
+        tomsBlockingMove = nullSquares[0];
+      }
     }
   }
 
@@ -169,14 +168,12 @@ function checkForWin() {
   }
 }
 
+
 function checkForFull() {
   nullCount = 0;
-
-  for (row=0; row<3; row++) {
-    for (col=0; col<3;col++) {
-      if (board[row][col] == null) {
-        nullCount++;
-      }
+  for (square in board) {
+    if (board[square] == null) {
+      nullCount++;
     }
   }
   if (nullCount == 0) {
@@ -201,24 +198,30 @@ function switchPlayer() {
 }
 
 function tomsMove() {
-  var potentialMoves = [];
-  for (row=0; row<3; row++) {
-    for (col=0; col<3;col++) {
-      if (board[row][col] == null) {
-        potentialMoves.push([row, col]);
+  var move;
+
+  if (tomsWinningMove) {
+    move = tomsWinningMove;
+  } else if (tomsBlockingMove) {
+    move = tomsBlockingMove;
+  } else if (board["e"] == null) {
+    move = "e";
+  } else {
+    var potentialMoves = [];
+
+    for (square in board) {
+      if (board[square] == null) {
+        potentialMoves.push(square);
       }
     }
+    randomSelection = Math.floor((Math.random() * potentialMoves.length));
+    move = potentialMoves[randomSelection];
   }
 
-  randomSelection = Math.floor((Math.random() * potentialMoves.length));
-  var move = potentialMoves[randomSelection];
-
-  var row = move[0];
-  var col = move[1];
-  board[row][col] = "O";
+  board[move] = "O";
 
   setTimeout(function(){
-    drawTomsMove(row, col);
+    drawTomsMove(move);
     checkForWin();
     if (gameActive) {
       switchPlayer();
@@ -228,37 +231,29 @@ function tomsMove() {
 }
 
 // draws Tom's move to the board
-function drawTomsMove(row, col) {
-  var row = (function() {
-    switch(row) {
-      case 0:
-        return "a";
-      case 1:
-        return "b";
-      case 2:
-        return "c";
-    }
-  })();
-
-  var moveId = row + col;
-  var square = document.getElementById(moveId);
+function drawTomsMove(squareId) {
+  var square = document.getElementById(squareId);
   square.innerHTML = "O";
 }
 
 function endGame(winner) {
   console.log("Passed to endGame(): ", winner);
   gameActive = false;
+  var message;
 
   if (winner == "X" && playingTom) {
-    messageUI.innerHTML = "You won!";
+    message = "You won!";
   } else if (winner == "X" && !playingTom) {
-    messageUI.innerHTML = "Player X won!"
+    message = "Player X won!"
   } else if (winner == "O" && playingTom) {
-    messageUI.innerHTML = "Tom won";
+    message = "Tom won!";
+  } else if (winner == "0" && !playingTom) {
+    message = "Player O won!"
   } else {
-    messageUI.innerHTML = "Player O won!"
+    message = "No winner this time."
   }
 
+  messageUI.innerHTML = message;
   submitUI.style.display = "none";
   playAgainUI.style.display = "inline-block";
 }
@@ -273,9 +268,14 @@ function resetGameUI() {
 }
 
 function createEmptyBoard() {
-  board = [];
-  for (var i=0; i<3; i++) {
-    board.push([null, null, null]);
-  }
-  return board;
+  return { a: null,
+           b: null,
+           c: null,
+           d: null,
+           e: null,
+           f: null,
+           g: null,
+           h: null,
+           i: null
+         }
 }
