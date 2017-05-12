@@ -200,9 +200,9 @@ function switchPlayer() {
 function tomsMove() {
   var move;
 
-  if (tomsWinningMove) {
+  if (tomsWinningMove && board[tomsWinningMove] == null) {
     move = tomsWinningMove;
-  } else if (tomsBlockingMove) {
+  } else if (tomsBlockingMove && board[tomsBlockingMove] == null) {
     move = tomsBlockingMove;
   } else if (board["e"] == null) {
     move = "e";
