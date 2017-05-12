@@ -264,7 +264,7 @@ function resetGameUI() {
   playAgainUI.style.display = "none";
   startUI.style.display = "inline-block";
   header.style.display = "inline-block";
-  messageUI.innerHTML = "Winner goes first...";
+  messageUI.innerHTML = "";
 }
 
 function createEmptyBoard() {
