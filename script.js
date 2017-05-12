@@ -256,6 +256,8 @@ function endGame(winner) {
   messageUI.innerHTML = message;
   submitUI.style.display = "none";
   playAgainUI.style.display = "inline-block";
+  tomsWinningMove = null;
+  tomsBlockingMove = null;
 }
 
 // Brings back to the start screen
